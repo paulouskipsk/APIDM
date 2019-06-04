@@ -19,9 +19,8 @@ class CategoriesController extends Controller
     public function create(Request $request){
         $category = new Category();
         $category->description = $request->description;
-        $category->status = $request->status;
+        $category->typ_id = $request->type->id;
 
-        response()->json($request);
         try{
             $category->save();
             return 1;
