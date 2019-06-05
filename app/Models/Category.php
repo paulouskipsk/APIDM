@@ -1,86 +1,68 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-//use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Type;
 use Illuminate\Support\Facades\DB;
 
-class Category extends Model{
-    //use SoftDeletes;
-    //protected $fillable = ['id', 'description', 'typ_id', 'updated_at'];
-    private $id;
-    private $description;
-    private $type;
-    private $status;
+class Category extends Model
+{
+    protected $fillable = [ 'id', 'description', 'type', 'status' ];
 
-    public function __construct($data = []){
-        $this->id = $data->id;
-        $this->description = $data->description;
-        $this->status = $data->status;
-        
-        $this->type->id = $data->type->id;
-        $this->type->description = $data->type->description;
-        $this->type->status = $data->type->status;
-    }
-
-    public function getId(){
-        return $this->id;
-    }
-
-    public function setId($id){
+    public function __construct($id=0, $description='', $status='I', $type=[]){
         $this->id = $id;
-    }
-
-    public function getDescription(){
-        return $this->id;
-    }
-
-    public function setDescription($description){
         $this->description = $description;
-    }
-
-    public function getType(){
-        return $this->type;
-    }
-
-    public function setType($type){
-        $this->type = $type;
-    }
-
-    public function getStatus(){
-        return $this->status;
-    }
-
-    public function setStatus($status){
         $this->status = $status;
+        $this->type = $type;        
     }
-
-    // ============================   Funções personalizadas ==============================
 
     public static function getAll(){
-        return DB::select(
-            'select * 
-                from categories 
-                    left join types 
-                        on types.id = categories.type_id', $id
-        ); 
-    }
+        $data = DB::table('categories')->get();
 
+        $categories = array();
+        
+        foreach($data as $item){
+            $category = new Category(
+                $item->description,
+                $item->id,
+                $item->status,
+                Type::findById($item->type_id)
+            );
+            array_push($categories, $category);
+        }
+        return $categories;
+    }
     public static function findById($id){
-        return DB::select(  
-            'select * 
-                from categories 
-                where id = ? 
-                left join types 
-                        on types.id = categories.type_id', $id);
+        return DB::table('categories')
+                    ->leftJoin('types', 'types.id', '=', 'categories.type_id')
+                    ->where('categories.id', $id)
+                    ->first();
     }
-
-    public function save(){
+    public function create(){
         Try{
             DB::beginTransaction();
-                DB::insert('insert into categories (description, type_id) values (?, ?)', 
-                array($this->description, $this->type->id));
+                DB::table('categories')->insert([
+                    'description'   => $this->description, 
+                    'status'        => $this->status,
+                    'type_id'       => $this->type->getId()                   
+                ]);
+            DB::commit();
+            return 1;
+        }catch(Exception $err){
+            DB::rollback();
+            return 0;
+        }
+    }
+    public function _update(){
+        Try{
+            DB::beginTransaction();
+                DB::table('categories')
+                ->where('id', $this->id)
+                ->update([
+                    'description'   => $this->description, 
+                    'status'        => $this->status,
+                    'type_id'       => $this->type->getId() 
+                ]);
             DB::commit();
             return 1;
         }catch(Exception $err){
@@ -89,26 +71,7 @@ class Category extends Model{
         }
     }
 
-    public function update(){
-        Try{
-            DB::beginTransaction();
-                DB::update(
-                    "update category set
-                        description = ?
-                        status = ?
-                        type_id = ?
-                        where id = ?", 
-                        array($this->description, $this->status, $this->type->id, $this->id)
-                );
-            DB::commit();
-            return 1;
-        }catch(Exception $err){
-            DB::rollback();
-            return 0;
-        }
-    }
-
-    public static function delete($id){
+    public function drop($id){
         Try{
             DB::beginTransaction();
                 DB::update("update category set status = 'C' where id = ?", $id);
@@ -118,8 +81,5 @@ class Category extends Model{
             DB::rollback();
             return 0;
         }
-    }
-
-
-    
+    }    
 }

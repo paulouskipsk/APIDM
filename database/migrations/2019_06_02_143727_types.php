@@ -11,13 +11,13 @@ class Types extends Migration
         Schema::create('types', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('description', 100);
-            $table->char('status');
+            $table->char('status', 1);
             $table->timestamps = false;
         });
 
         DB::insert(
-            "insert into types (description, status) 
-            values ('Receitas','A'), ('Despesas','A')"
+            "insert into types (id, description, status) 
+            values (1, 'Receitas','A'), (2, 'Despesas','A')"
         );
     }
 

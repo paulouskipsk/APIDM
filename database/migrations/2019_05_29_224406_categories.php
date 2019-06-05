@@ -11,7 +11,7 @@ class Categories extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('description', 100);
-            $table->char('status');
+            $table->char('status', 1);
             $table->integer('type_id');
             $table->timestamps = false;
         });

@@ -15,15 +15,15 @@ Route::delete('/categories/delete/{id}', 'CategoriesController@delete');
 Route::get('/categories/find/{id}', 'CategoriesController@findById');
 
 // ROTAS PARA TYPE :: ROTA DEVE INICIAR COM "/api"
-Route::get('/type', 'TypesController@getAll');
-Route::post('/type/create', 'TypesController@create');
-Route::put('/type/update', 'TypesController@update');
-Route::delete('/type/delete/{id}', 'TypesController@delete');
-Route::get('/type/find/{id}', 'TypesController@findById');
+Route::get('/types', 'TypesController@getAll');
+Route::post('/types/create', 'TypesController@create');
+Route::put('/types/update', 'TypesController@update');
+Route::delete('/types/delete/{id}', 'TypesController@delete');
+Route::get('/types/find/{id}', 'TypesController@findById');
 
 // ROTAS PARA REVENUE :: ROTA DEVE INICIAR COM "/api"
-Route::get('/revenue', 'RevenuesController@getAll');
-Route::post('/revenue/create', 'RevenuesController@create');
-Route::put('/revenue/update', 'RevenuesController@update');
-Route::delete('/revenue/delete/{id}', 'RevenuesController@delete');
-Route::get('/revenue/find/{id}', 'RevenuesController@findById');
+Route::get('/revenues', 'RevenuesController@getAll');
+Route::post('/revenues/create', 'RevenuesController@create');
+Route::put('/revenues/update', 'RevenuesController@update');
+Route::delete('/revenues/delete/{id}', 'RevenuesController@delete');
+Route::get('/revenues/find/{id}', 'RevenuesController@findById');
