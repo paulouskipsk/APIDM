@@ -11,8 +11,6 @@ class CategoriesController extends Controller
 {
 
     public function getAll(){
-        //echo var_dump(Category::getAll());
-
         return response()->json(Category::getAll());
     }
 

@@ -23,9 +23,9 @@ class Category extends Model
         
         foreach($data as $item){
             $category = new Category(
-                $item->description,
                 $item->id,
-                $item->status,
+                $item->description,
+                $item->status,                
                 Type::findById($item->type_id)
             );
             array_push($categories, $category);
