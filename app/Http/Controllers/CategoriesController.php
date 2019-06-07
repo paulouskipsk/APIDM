@@ -19,7 +19,13 @@ class CategoriesController extends Controller
     }
 
     public function create(Request $request){
-        $type = Type::findById($request['type']['id']);
+    
+        echo print_r($request);
+        return 0;
+
+
+
+       /* $type = Type::findById($request['type']['id']);
         $category = new Category();        
     
         $category->setDescription($request['description']);
@@ -31,7 +37,7 @@ class CategoriesController extends Controller
             return 1;
         }catch(Exception $e){
             return 0;
-        }
+        }*/
     }
 /*
     public function update(Request $request){

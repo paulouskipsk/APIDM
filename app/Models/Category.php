@@ -15,12 +15,9 @@ class Category extends Model
         $this->status = $status;
         $this->type = $type;        
     }
-
     public static function getAll(){
         $data = DB::table('categories')->get();
-
         $categories = array();
-        
         foreach($data as $item){
             $category = new Category(
                 $item->id,
