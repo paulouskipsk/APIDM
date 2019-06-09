@@ -23,7 +23,7 @@ class CategoriesController extends Controller
 
         $type = Type::findById($data['type']['id']);
         $category = new Category(
-            0,    
+            [],    
             $data['description'],
             $data['status'],
             $type
