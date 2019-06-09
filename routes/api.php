@@ -14,14 +14,12 @@ Route::put('/categories/update', 'CategoriesController@update');
 Route::delete('/categories/delete/{id}', 'CategoriesController@delete');
 Route::get('/categories/find/{id}', 'CategoriesController@findById');
 
-// ROTAS PARA TYPE :: ROTA DEVE INICIAR COM "/api"
 Route::get('/types', 'TypesController@getAll');
 Route::post('/types/create', 'TypesController@create');
 Route::put('/types/update', 'TypesController@update');
 Route::delete('/types/delete/{id}', 'TypesController@delete');
 Route::get('/types/find/{id}', 'TypesController@findById');
 
-// ROTAS PARA REVENUE :: ROTA DEVE INICIAR COM "/api"
 Route::get('/revenues', 'RevenuesController@getAll');
 Route::post('/revenues/create', 'RevenuesController@create');
 Route::put('/revenues/update', 'RevenuesController@update');

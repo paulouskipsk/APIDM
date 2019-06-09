@@ -17,11 +17,26 @@ class Type
     }
 
     public static function getAll(){
-        return DB::select( 'select * from types'); 
+        $data = DB::table('types')
+                    ->orderBy('description')
+                    ->get();
+
+        $types = array();
+        foreach($data as $item){
+            $type = new Type(
+                $item->id,
+                $item->description,
+                $item->status            
+            );
+            array_push($types, $type);
+        }
+        return $types;
     }
 
     public static function findById($id){
-        $data = DB::table('types')->where('id', '=', $id)->first();
+        $data = DB::table('types')
+                    ->where('id', '=', $id)
+                    ->first();
 
         $type = new Type(
             $data->id,

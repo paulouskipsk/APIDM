@@ -68,6 +68,8 @@
             <div class="title m-b-md">
                 API DISPOSITIVOS MOVEIS
             </div>
+
+            <?php  ?>
         </div>
     </body>
 </html>

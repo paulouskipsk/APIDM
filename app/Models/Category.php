@@ -16,7 +16,9 @@ class Category extends Model
         $this->type = $type;        
     }
     public static function getAll(){
-        $data = DB::table('categories')->get();
+        $data = DB::table('categories')
+                    ->orderBy('description')
+                    ->get();
         $categories = array();
         foreach($data as $item){
             $category = new Category(
@@ -30,10 +32,19 @@ class Category extends Model
         return $categories;
     }
     public static function findById($id){
-        return DB::table('categories')
-                    ->leftJoin('types', 'types.id', '=', 'categories.type_id')
+        $item = DB::table('categories')
                     ->where('categories.id', $id)
                     ->first();
+                    
+        if(isset($item)){
+            return new Category(
+                $item->id,
+                $item->description,
+                $item->status,                
+                Type::findById($item->type_id)
+            );
+        }         
+        return new Category();
     }
     public function create(){
         Try{
@@ -41,7 +52,7 @@ class Category extends Model
                 DB::table('categories')->insert([
                     'description'   => $this->description, 
                     'status'        => $this->status,
-                    'type_id'       => $this->type->getId()                   
+                    'type_id'       => $this->type->id                  
                 ]);
             DB::commit();
             return 1;
@@ -54,11 +65,11 @@ class Category extends Model
         Try{
             DB::beginTransaction();
                 DB::table('categories')
-                ->where('id', $this->id)
-                ->update([
-                    'description'   => $this->description, 
-                    'status'        => $this->status,
-                    'type_id'       => $this->type->getId() 
+                    ->where('id', $this->id)
+                    ->update([
+                        'description'   => $this->description, 
+                        'status'        => $this->status,
+                        'type_id'       => $this->type->getId() 
                 ]);
             DB::commit();
             return 1;
@@ -66,7 +77,7 @@ class Category extends Model
             DB::rollback();
             return 0;
         }
-    }
+    }/*
 
     public function drop($id){
         Try{
@@ -78,5 +89,6 @@ class Category extends Model
             DB::rollback();
             return 0;
         }
-    }    
+    }  
+    */  
 }
