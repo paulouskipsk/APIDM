@@ -28,7 +28,7 @@ class CategoriesController extends Controller
             $data['status'],
             $type
         );
-        
+
         try{
             $category->create();
             return 1;
@@ -38,8 +38,16 @@ class CategoriesController extends Controller
     }
 
     public function update(Request $request){
-        $category = $this->category::find($request->id);
-        $category->description = $request->description;
+        $data = $request->json()->all();
+
+        $type = Type::findById($data['type']['id']);
+        $category = new Category(
+            $data['id'],    
+            $data['description'],
+            $data['status'],
+            $type
+        );
+
         try{
             $category->_update();
             return 1;
@@ -47,15 +55,14 @@ class CategoriesController extends Controller
             return 0;
         }
     }
-/*
+
     public function delete($id){
-        $category = $this->category::find($id);
+        $category = Category::findById($id);
         try{
-            $category->delete($id);
+            $category->drop($id);
             return 1;
         }catch(Exception $e){
             return 0;
         }
     }
-  */  
 }

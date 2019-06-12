@@ -4,6 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Type;
 use Illuminate\Support\Facades\DB;
+use Mockery\CountValidator\Exception;
 
 class Category extends Model
 {
@@ -18,6 +19,7 @@ class Category extends Model
     public static function getAll(){
         $data = DB::table('categories')
                     ->orderBy('description')
+                    ->where('status','<>','D')
                     ->get();
         $categories = array();
         foreach($data as $item){
@@ -55,10 +57,10 @@ class Category extends Model
                     'type_id'       => $this->type->id                  
                 ]);
             DB::commit();
-            return 1;
+            return true;
         }catch(Exception $err){
             DB::rollback();
-            return 0;
+            return throwException(new Exception("Erro ao salvar a Categoria : "+$err));
         }
     }
     public function _update(){
@@ -69,26 +71,28 @@ class Category extends Model
                     ->update([
                         'description'   => $this->description, 
                         'status'        => $this->status,
-                        'type_id'       => $this->type->getId() 
+                        'type_id'       => $this->type->id
                 ]);
             DB::commit();
-            return 1;
+            return true;
         }catch(Exception $err){
             DB::rollback();
-            return 0;
+            return throwException(new Exception("Erro ao Atualizar a Categoria : "+$err));
         }
-    }/*
+    }
 
     public function drop($id){
         Try{
             DB::beginTransaction();
-                DB::update("update category set status = 'C' where id = ?", $id);
+                DB::table('categories')
+                    ->where('id', $this->id)
+                    ->update(['status' => 'D' ]);
             DB::commit();
-            return 1;
+            return true;
         }catch(Exception $err){
             DB::rollback();
-            return 0;
+            return throwException(new Exception("Erro ao Atualizar a Categoria : "+$err));
         }
     }  
-    */  
+    
 }
