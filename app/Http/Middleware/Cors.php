@@ -14,4 +14,6 @@ class Cors
                ->header('Access-Control-Allow-Headers', '*');
 
     }
+
+   
 }
