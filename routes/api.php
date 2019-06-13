@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 */
 // ROTAS PARA CATEGORIA :: ROTA DEVE INICIAR COM "/api"
 Route::get('/categories',           array('middleware' => 'cors', 'uses' => 'CategoriesController@getAll'));
-Route::get('/categories/find/{id}',  array('middleware' => 'cors', 'uses' => 'CategoriesController@findById'));
+Route::get('/categories/find/{id}', array('middleware' => 'cors', 'uses' => 'CategoriesController@findById'));
 Route::post('/categories/create',   array('middleware' => 'cors', 'uses' => 'CategoriesController@create'));
 Route::put('/categories/update',    array('middleware' => 'cors', 'uses' => 'CategoriesController@update'));
 Route::delete('/categories/delete', array('middleware' => 'cors', 'uses' => 'CategoriesController@delete'));
