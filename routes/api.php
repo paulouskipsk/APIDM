@@ -14,14 +14,6 @@ Route::post('/categories/create',   array('middleware' => 'cors', 'uses' => 'Cat
 Route::put('/categories/update',    array('middleware' => 'cors', 'uses' => 'CategoriesController@update'));
 Route::delete('/categories/delete', array('middleware' => 'cors', 'uses' => 'CategoriesController@delete'));
 
-
-/*
-Route::get('/categories', 'CategoriesController@getAll');
-Route::get('/categories/find/{id}', 'CategoriesController@findById')->Middleware('cors');
-Route::post('/categories/create', 'CategoriesController@create');
-Route::put('/categories/update', 'CategoriesController@update');
-Route::delete('/categories/delete/{id}', 'CategoriesController@delete');
-*/
 Route::get('/types', 'TypesController@getAll');
 Route::get('/types/find/{id}', 'TypesController@findById');
 Route::post('/types/create', 'TypesController@create');
