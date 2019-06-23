@@ -3,37 +3,36 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Revenue;
+use App\Models\Expense;
 use App\Models\Category;
 
-
-
-class RevenuesController extends Controller
+class ExpensesController extends Controller
 {
     public function getAll(){
-        return response()->json(Revenue::getAll());
+        return response()->json(Expense::getAll());
     }
 
     public function findById($id){
-        return response()->json(Revenue::findById($id));
+        return response()->json(Expense::findById($id));
     }
 
     public function create(Request $request){
         $data = $request->json()->all();
 
-        $revenue = new Revenue(
+        $expense = new Expense(
             0,
             $data['description'],
             $data['status'],
-            $data['receivingValue'],
-            $data['receivingDate'],
-            $data['received'],
+            $data['paymentDate'],
+            $data['amountPay'],
+            $data['additionalCharges'],
+            $data['paid'],
             $data['comments'],
             Category::findById($data['category']['id'])
         );
 
         try{
-            $revenue->create();
+            $expense->create();
             return 1;
         }catch(Exception $e){
             return 0;
@@ -43,19 +42,20 @@ class RevenuesController extends Controller
     public function update(Request $request){
         $data = $request->json()->all();
 
-        $revenue = new Revenue(
+        $expense = new Expense(
             $data['id'],
             $data['description'],
             $data['status'],
-            $data['receivingValue'],
-            $data['receivingDate'],
-            $data['received'],
+            $data['paymentDate'],
+            $data['amountPay'],
+            $data['additionalCharges'],
+            $data['paid'],
             $data['comments'],
             Category::findById($data['category']['id'])
         );
 
         try{
-            $revenue->_update();
+            $expense->_update();
             return 1;
         }catch(Exception $e){
             return 0;
@@ -63,9 +63,9 @@ class RevenuesController extends Controller
     }
 
     public function delete($id){
-        $revenue = Revenue::findById($id);
+        $expense = Expense::findById($id);
         try{
-            $revenue->drop($id);
+            $expense->drop($id);
             return 1;
         }catch(Exception $e){
             return 0;
