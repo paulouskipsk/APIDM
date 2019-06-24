@@ -42,5 +42,5 @@ Route::delete('/expenses/delete/{id}',      array('middleware' => 'cors', 'uses'
 
 
 // RELATORIOS
-Route::get('/reports/budget',                array('middleware' => 'cors', 'uses' => 'ReportsController@budget'));
+Route::get('/reports/budget/{monthIni}/{monthFin}',  array('middleware' => 'cors', 'uses' => 'ReportsController@budget'));
 
