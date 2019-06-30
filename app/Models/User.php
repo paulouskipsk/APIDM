@@ -6,19 +6,30 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Mockery\CountValidator\Exception;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\HasApiTokens;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Str;
 
-class User extends Model
+class User extends Authenticatable
 {
-    protected $fillable = [ 'id', 'name', 'login', 'password', 'status', 'image' ];
+    use HasApiTokens, Notifiable;
 
-    public function __construct($id=0, $name='', $login='', $password='', $status='A', $image=''){
+    protected $fillable = [ 'id', 'name', 'login', 'password', 'status', 'image', 'api_token'];
+    protected $hiden = [ 'password', 'remember_token' ];
+
+    public function __construct($id=0, $name='', $login='', $password='', $status='A', $image='', $api_token=''){
         $this->id = $id;
         $this->name = $name;
         $this->login = $login;
-        $this->password = Hash::make($password);
+        $this->password = $password;
         $this->status = $status;
-        $this->image = $image;        
+        $this->image = $image;   
+        $this->api_token = $api_token;    
     }
+
+
+
     public static function getAll(){
         $data = DB::table('users')
                     ->orderBy('name')
@@ -32,7 +43,8 @@ class User extends Model
                 $item->login,
                 $item->password,
                 $item->status,  
-                $item->image              
+                $item->image,
+                $item->api_token              
             );
             array_push($users, $user);
         }
@@ -50,7 +62,8 @@ class User extends Model
                 $item->login,
                 $item->password,
                 $item->status,  
-                $item->image              
+                $item->image,
+                $item->api_token             
             );
         }         
         return new User();
@@ -61,9 +74,10 @@ class User extends Model
                 DB::table('users')->insert([
                     'name'      => $this->name, 
                     'login'     => $this->login,
-                    'password'  => $this->password,
+                    'password'  => Hash::make($this->password),
                     'status'    => $this->status,
-                    'image'     => $this->image                 
+                    'image'     => $this->image,   
+                    'api_token' => Str::random(60)            
                 ]);
             DB::commit();
             return true;

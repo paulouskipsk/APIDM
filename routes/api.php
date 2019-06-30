@@ -38,6 +38,7 @@ Route::post('/expenses/create',             array('middleware' => 'cors', 'uses'
 Route::put('/expenses/update',              array('middleware' => 'cors', 'uses' => 'ExpensesController@update'));
 Route::delete('/expenses/delete/{id}',      array('middleware' => 'cors', 'uses' => 'ExpensesController@delete'));  
 
+Route::post('/login',                       array('middleware' => 'cors', 'uses' => 'LoginController@authenticate'));
 
 
 
