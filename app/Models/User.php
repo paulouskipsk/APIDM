@@ -132,7 +132,7 @@ class User extends Authenticatable
             return true;
         }catch(Exception $err){
             DB::rollback();
-            return throwException(new Exception("Erro ao Atualizar a Usuário : "+$err));
+            return throwException(new Exception($err));
         }
     }
     public static function getTutorialFinish($id){
