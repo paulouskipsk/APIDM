@@ -64,4 +64,13 @@ class UsersController extends Controller
             return 0;
         }
     }
+
+    public function getTutorialFinish($id){
+        return response()->json(User::getTutorialFinish($id));
+    }
+
+    public function SetTutorialFinish(Request $request){
+        $data = $request->json()->all();
+        return response()->json(User::setTutorialFinish($data));
+    }
 }

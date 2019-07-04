@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Hash;
 
 class Users extends Migration
 {
@@ -16,6 +17,9 @@ class Users extends Migration
             $table->string('password', 100);
             $table->text('image');
             $table->char('status', 1);
+            $table->char('tutorial_ok', 1)
+                    ->nullable()
+                    ->default('F');
             $table->string('api_token', 80)
                     ->after('password')
                     ->unique()
@@ -23,13 +27,17 @@ class Users extends Migration
                     ->default(null);
             
         });
-/*
-        DB::insert(
-            "insert into users(id, name, login, password, status, image) values
-            (1, 'Usuario 1', 'usuario1', '123', 'A', ''),
-            (2, 'Usuario 2', 'usuario2', '1234', 'A', ''),
-            (3, 'Usuario 3', 'usuario3', '12345', 'A', '')"
-        );*/
+
+        DB::beginTransaction();
+                DB::table('users')->insert([
+                    'name'      => 'Administrator', 
+                    'login'     => 'adm',
+                    'password'  => Hash::make('adm'),
+                    'status'    => 'A',
+                    'image'     => 'nada',   
+                    'api_token' => Str::random(60)            
+                ]);
+            DB::commit();
     }
 
     public function down()

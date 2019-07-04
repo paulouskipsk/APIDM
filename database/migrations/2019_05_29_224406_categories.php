@@ -18,8 +18,8 @@ class Categories extends Migration
 
         DB::insert(
             "insert into categories(id, description, status, type_id) values
-            (1, 'Categoria 1', 'A', 1),(2, 'Categoria 2', 'A', 1),
-            (3, 'Categoria 3', 'A', 2),(4, 'Categoria 4', 'A', 2)"
+            (1, 'Receita Fixa', 'A', 1),(2, 'Premiação 2', 'A', 1),
+            (3, 'Despesa Fixa', 'A', 2),(4, 'Cartão de Credito', 'A', 2)"
         );
     }
 

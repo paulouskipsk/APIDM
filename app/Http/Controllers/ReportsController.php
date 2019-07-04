@@ -20,8 +20,6 @@ class ReportsController extends Controller
         $dataRevenue = Revenue::getAll();
         $dataExpense = Expense::getAll();
 
-        
-
         foreach ($dataExpense as $item) {
             if ($item->paymentDate >=  $monthIni && $item->paymentDate <= $mountFin) {
                 $expenses += $item->amountPay + $item->additionalCharges;
@@ -38,5 +36,29 @@ class ReportsController extends Controller
         $budget['balance'] = $revenues - $expenses;
 
         return response()->json($budget);
+    }
+
+    public function delayPaymentsValue(){
+        $value = 0;
+        $expenses = Expense::getAll();
+
+        foreach($expenses as $expense){
+            if($expense->paymentDate < date("Y-m-d") && $expense->paid == "F"){
+                 $value += $expense->amountPay + $expense->additionalCharges;
+            }
+        }
+        return $value;
+    }
+
+    public function delayPaymentsAll(){
+        $delayExpenses = Array();
+        $expenses = Expense::getAll();
+
+        foreach($expenses as $expense){
+            if($expense->paymentDate < date("Y-m-d") && $expense->paid == "F"){
+                array_push($delayExpenses, $expense);
+            }
+        }
+        return response()->json($delayExpenses);
     }
 }

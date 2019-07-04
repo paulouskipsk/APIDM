@@ -14,7 +14,7 @@ class LoginController extends Controller
 
         foreach($users as $user){
             if(strcmp($data['login'], $user->login) == 0 && Hash::check($data['password'], $user->password)){
-                return response()->json($user->api_token);
+                return response()->json($user);
             }
         }        
         return response()->json('');

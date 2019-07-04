@@ -95,7 +95,7 @@ class User extends Authenticatable
                     ->update([
                         'name'      => $this->name, 
                         'login'     => $this->login,
-                        'password'  => $this->password,
+                        'password'  => Hash::make($this->password),
                         'status'    => $this->status,
                         'image'     => $this->image    
                 ]);
@@ -121,5 +121,29 @@ class User extends Authenticatable
             return throwException(new Exception("Erro ao Atualizar a Usuário : "+$err));
         }
     }  
+
+    public static function setTutorialFinish($id){
+        Try{
+            DB::beginTransaction();
+                DB::table('users')
+                    ->where('id', $id)
+                    ->update(['tutorial_ok' => 'T' ]);
+            DB::commit();
+            return true;
+        }catch(Exception $err){
+            DB::rollback();
+            return throwException(new Exception("Erro ao Atualizar a Usuário : "+$err));
+        }
+    }
+    public static function getTutorialFinish($id){
+        $user = DB::table('users')
+                    ->where('users.id', $id)
+                    ->first();
+                    
+        if(isset($user)){
+            return $user->tutorial_ok;
+        }         
+        return 'F';
+    }
     
 }

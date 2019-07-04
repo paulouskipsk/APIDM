@@ -14,9 +14,13 @@ class Expenses extends Migration
             $table->char('status',1);
             $table->date('paymentDate');
             $table->double('amountPay' );
-            $table->double('additionalCharges');   
-            $table->char('paid', 1);   
-            $table->string('comments');      
+            $table->double('additionalCharges')
+                    ->nullable()
+                    ->default(0);
+            $table->char('paid', 1)
+                    ->default(0);
+            $table->string('comments')
+                    ->nullable();
             $table->bigInteger('category_id');      
             $table->timestamps = false;
         });

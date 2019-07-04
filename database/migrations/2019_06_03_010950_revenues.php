@@ -14,8 +14,12 @@ class Revenues extends Migration
             $table->char('status',1);
             $table->double('receivingValue');
             $table->date('receivingDate' );
-            $table->char('received', 1);      
-            $table->string('comments');      
+            $table->char('received', 1)
+                        ->nullable()
+                        ->default(0);    
+            $table->string('comments')
+                        ->nullable()
+                        ->default(null);    
             $table->bigInteger('category_id');      
             $table->timestamps = false;
         });

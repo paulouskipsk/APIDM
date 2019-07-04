@@ -28,6 +28,8 @@ Route::delete('/revenues/delete/{id}',      array('middleware' => 'cors', 'uses'
 
 Route::get('/users',                        array('middleware' => 'cors', 'uses' => 'UsersController@getAll'));
 Route::get('/users/find/{id}',              array('middleware' => 'cors', 'uses' => 'UsersController@findById'));
+Route::get('/users/gettutorialfinish/{id}', array('middleware' => 'cors', 'uses' => 'UsersController@getTutorialFinish'));
+Route::put('/users/settutorialfinish',      array('middleware' => 'cors', 'uses' => 'UsersController@setTutorialFinish'));
 Route::post('/users/create',                array('middleware' => 'cors', 'uses' => 'UsersController@create'));
 Route::put('/users/update',                 array('middleware' => 'cors', 'uses' => 'UsersController@update'));
 Route::delete('/users/delete/{id}',         array('middleware' => 'cors', 'uses' => 'UsersController@delete'));  
@@ -43,5 +45,7 @@ Route::post('/login',                       array('middleware' => 'cors', 'uses'
 
 
 // RELATORIOS
-Route::get('/reports/budget/{monthIni}/{monthFin}',  array('middleware' => 'cors', 'uses' => 'ReportsController@budget'));
+Route::get('/reports/budget/{monthIni}/{monthFin}',     array('middleware' => 'cors', 'uses' => 'ReportsController@budget'));
+Route::get('/reports/delaypaymentsvalue',               array('middleware' => 'cors', 'uses' => 'ReportsController@delayPaymentsValue'));
+Route::get('/reports/delaypaymentsall',                 array('middleware' => 'cors', 'uses' => 'ReportsController@delayPaymentsAll'));
 
