@@ -7,10 +7,8 @@ use Illuminate\Support\Facades\DB;
 use Mockery\CountValidator\Exception;
 use Illuminate\Support\Facades\Hash;
 
-class User extends Authenticatable
+class User extends Model
 {
-    use HasApiTokens, Notifiable;
-
     protected $fillable = [ 'id', 'name', 'login', 'password','image'];
 
     public function __construct($id=0, $name='', $login='', $password='', $image=''){
@@ -21,25 +19,26 @@ class User extends Authenticatable
         $this->image = $image;     
     }
 
-
-
     public static function getAll(){
         $data = DB::table('users')
                     ->orderBy('name')
                     ->get();
         $users = array();
-        foreach($data as $item){
-            $user = new User(
-                $item->id,
-                $item->name,
-                $item->login,
-                $item->password,
-                $item->image
-            );
-            array_push($users, $user);
+
+        if(isset($data)){
+            foreach($data as $item){
+                $user = new User(
+                    $item->id,
+                    $item->name,
+                    $item->login,
+                    $item->password,
+                    $item->image
+                );
+                array_push($users, $user);
+            }
         }
         return $users;
-    }
+    } 
     public static function findById($id){
         $item = DB::table('users')
                     ->where('users.id', $id)

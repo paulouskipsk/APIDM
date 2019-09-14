@@ -23,7 +23,6 @@ class UsersController extends Controller
             $data['name'],
             $data['login'],
             $data['password'],
-            $data['status'],
             $data['image']
         );
 
@@ -43,7 +42,6 @@ class UsersController extends Controller
             $data['name'],
             $data['login'],
             $data['password'],
-            $data['status'],
             $data['image']
         );
 
