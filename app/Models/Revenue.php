@@ -2,61 +2,47 @@
 
 namespace App\Models;
 
-use App\Models\Category;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Mockery\CountValidator\Exception;
 
 class Revenue extends Model
 {
+    private $errors;
+
     protected $fillable = [
         'id',
         'description',
-        'status',
         'receivingValue',
         'receivingDate',
-        'received',
-        'comments',
-        'category',
+        'received'
     ];
     public function __construct(
         $id = null,
         $description = null,
-        $status = null,
         $receivingValue = null,
         $receivingDate = null,
-        $received = null,
-        $comments = null,
-        $category = null,
-        $paidByUser = null
+        $received = null
     ) {
         $this->id = $id;
         $this->description = $description;
-        $this->status = $status;
         $this->receivingValue = $receivingValue;
         $this->receivingDate = $receivingDate;
         $this->received = $received;
-        $this->comments = $comments;
-        $this->category = $category;
     }
 
-    public static function getAll()
-    {
+    public static function getAll(){
         $data = DB::table('revenues')
             ->orderBy('description')
-            ->where('status', '<>', 'D')
             ->get();
         $revenues = array();
         foreach ($data as $item) {
             $revenue = new Revenue(
                 $item->id,
                 $item->description,
-                $item->status,
                 $item->receivingValue,
                 $item->receivingDate,
-                $item->received,
-                $item->comments,
-                Category::findById($item->category_id)
+                $item->received
             );
 
             array_push($revenues, $revenue);
@@ -64,8 +50,7 @@ class Revenue extends Model
         return $revenues;
     }
 
-    public static function findById($id)
-    {
+    public static function findById($id){
         $item = DB::table('revenues')
                     ->where('revenues.id', $id)
                     ->first();
@@ -74,73 +59,93 @@ class Revenue extends Model
             return new Revenue(
                 $item->id,
                 $item->description,
-                $item->status,
                 $item->receivingValue,
                 $item->receivingDate,
-                $item->received,
-                $item->comments,
-                Category::findById($item->category_id)
+                $item->received
             );
         }         
         return new Revenue();
     }
 
-    public function create()
-    {
+    public function create() {
         try {
-            DB::beginTransaction();
-            DB::table('revenues')->insert([
-                'description' => $this->description,
-                'status' => $this->status,
-                'receivingValue' => $this->receivingValue,
-                'receivingDate' => $this->receivingDate,
-                'received' => $this->received,
-                'comments' => $this->comments,
-                'category_id' => $this->category->id,
-            ]);
-            DB::commit();
-            return true;
+            $this->validate();
+            if(isset($this->errors)){
+                DB::beginTransaction();
+                DB::table('revenues')->insert([
+                    'description' => $this->description,
+                    'receivingValue' => $this->receivingValue,
+                    'receivingDate' => $this->receivingDate,
+                    'received' => $this->received
+                ]);
+                DB::commit();
+                $message = ["Message"=>"Registro Salvo com sucesso."];
+                return $message;
+            }
         } catch (Exception $err) {
             DB::rollback();
-            return throwException(new Exception("Erro ao salvar a Receita : "+$err));
+            $message = ["Message"=>"Erro ao salvar Registro: (".$err.")"];
+            return $message;
         }
     }
 
     public function _update()
     {
         try {
-            DB::beginTransaction();
-            DB::table('revenues')
-                ->where('id', $this->id)
-                ->update([
-                    'description' => $this->description,
-                    'status' => $this->status,
-                    'receivingValue' => $this->receivingValue,
-                    'receivingDate' => $this->receivingDate,
-                    'received' => $this->received,
-                    'comments' => $this->comments,
-                    'category_id' => $this->category->id,
-                ]);
-            DB::commit();
-            return true;
+            $this->validate();
+            if(!isset($this->errors)){
+                DB::beginTransaction();
+                DB::table('revenues')
+                    ->where('id', $this->id)
+                    ->update([
+                        'description' => $this->description,
+                        'receivingValue' => $this->receivingValue,
+                        'receivingDate' => $this->receivingDate,
+                        'received' => $this->received
+                    ]);
+                DB::commit();
+                $message = ["Message"=>"Registro Salva com sucesso."];
+            }else{
+                $message = $this->errors;
+            }
+            return $message;
         } catch (Exception $err) {
             DB::rollback();
-            return throwException(new Exception("Erro ao Atualizar a Receita : "+$err));
+            $message = ["message"=>"Erro ao salvar Registro: (".$err.")"];
+            return $message;
         }
+        
     }
 
-    public function drop($id)
+    public function drop()
     {
         try {
             DB::beginTransaction();
             DB::table('revenues')
                 ->where('id', $this->id)
-                ->update(['status' => 'D']);
+                ->delete();
             DB::commit();
-            return true;
+            $message = ["message"=>"Registro Deletado com sucesso." ];
+            return $message;
         } catch (Exception $err) {
             DB::rollback();
-            return throwException(new Exception("Erro ao Deletar a Receita : "+$err));
+            $message = ["message"=>"Erro ao deletar Registro: (".$err.")"];
+            return $message;
+        }
+    }
+
+    private function validate(){
+        if($this->description !== null){
+            $this->errors = ["description" => "Descrição deve ter mais que 3 letras"];
+        }
+        
+        if($this->receivingValue > 0){
+            $this->errors = ["receivingValue" => "Valor a receber deve ser maior que zero"];
+        }
+              
+        $date[] = explode('-', $this->receivingDate);
+        if(checkdate($date[0], $date[1], $date[2]) === 0 ){
+            $this->errorss = ["receivingDate" => "Data de Recebimento Inválida"];
         }
     }
 }

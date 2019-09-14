@@ -4,9 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Revenue;
-use App\Models\Category;
-
-
 
 class RevenuesController extends Controller
 {
@@ -20,55 +17,30 @@ class RevenuesController extends Controller
 
     public function create(Request $request){
         $data = $request->json()->all();
-
         $revenue = new Revenue(
             0,
             $data['description'],
-            $data['status'],
             $data['receivingValue'],
             $data['receivingDate'],
-            $data['received'],
-            $data['comments'],
-            Category::findById($data['category']['id'])
+            $data['received']
         );
-
-        try{
-            $revenue->create();
-            return 1;
-        }catch(Exception $e){
-            return 0;
-        }
+        return response()->json($revenue->create());
     }
 
     public function update(Request $request){
         $data = $request->json()->all();
-
         $revenue = new Revenue(
             $data['id'],
             $data['description'],
-            $data['status'],
             $data['receivingValue'],
             $data['receivingDate'],
-            $data['received'],
-            $data['comments'],
-            Category::findById($data['category']['id'])
+            $data['received']
         );
-
-        try{
-            $revenue->_update();
-            return 1;
-        }catch(Exception $e){
-            return 0;
-        }
+        return response()->json($revenue->_update());
     }
 
     public function delete($id){
         $revenue = Revenue::findById($id);
-        try{
-            $revenue->drop($id);
-            return 1;
-        }catch(Exception $e){
-            return 0;
-        }
+        return response()->json($revenue->drop());
     }
 }

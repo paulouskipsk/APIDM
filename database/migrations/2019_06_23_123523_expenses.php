@@ -11,17 +11,10 @@ class Expenses extends Migration
         Schema::create('expenses', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('description', 100);
-            $table->char('status',1);
             $table->date('paymentDate');
             $table->double('amountPay' );
-            $table->double('additionalCharges')
-                    ->nullable()
-                    ->default(0);
             $table->char('paid', 1)
                     ->default(0);
-            $table->string('comments')
-                    ->nullable();
-            $table->bigInteger('category_id');      
             $table->timestamps = false;
         });
     }
@@ -31,3 +24,5 @@ class Expenses extends Migration
         Schema::drop('expenses');
     }
 }
+
+//insert into expenses(id, description, paymentDate, amountPay, paid) values(0, "descricao", "paymentDate", "amountPay", 1)

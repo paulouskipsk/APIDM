@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Category;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Mockery\CountValidator\Exception;
@@ -12,54 +11,37 @@ class Expense extends Model
     protected $fillable = [
         'id',
         'description',
-        'status',
         'paymentDate',
         'amountPay',
-        'additionalCharges',
-        'paid',
-        'comments',
-        'category'
+        'paid'
     ];
     public function __construct(
         $id                    = null,
         $description           = null,
-        $status                = null,
         $paymentDate           = null,
         $amountPay             = null,
-        $additionalCharges     = null,
-        $paid                  = null,
-        $comments              = null,
-        $category              = null
+        $paid                  = null
     ) {
         $this->id                    = $id               ;
         $this->description           = $description      ;
-        $this->status                = $status           ;
         $this->paymentDate           = $paymentDate      ;
         $this->amountPay             = $amountPay        ;
-        $this->additionalCharges     = $additionalCharges;
         $this->paid                  = $paid             ;
-        $this->comments              = $comments         ;
-        $this->category              = $category         ;
     }
 
     public static function getAll()
     {
         $data = DB::table('expenses')
             ->orderBy('description')
-            ->where('status', '<>', 'D')
             ->get();
         $expenses = array();
         foreach ($data as $item) {
             $expense = new Expense(
                 $item->id,
                 $item->description,
-                $item->status,
                 $item->paymentDate,
                 $item->amountPay,
-                $item->additionalCharges,
-                $item->paid,
-                $item->comments,
-                Category::findById($item->category_id)
+                $item->paid
             );
 
             array_push($expenses, $expense);
@@ -70,20 +52,16 @@ class Expense extends Model
     public static function findById($id)
     {
         $item = DB::table('expenses')
-                    ->where('expenses.id', $id)
+                    ->where('id', $id)
                     ->first();
                     
         if(isset($item)){
             return new Expense(
                 $item->id,
                 $item->description,
-                $item->status,
                 $item->paymentDate,
                 $item->amountPay,
-                $item->additionalCharges,
-                $item->paid,
-                $item->comments,
-                Category::findById($item->category_id)
+                $item->paid
             );
         }         
         return new Expense();
@@ -92,61 +70,82 @@ class Expense extends Model
     public function create()
     {
         try {
-            DB::beginTransaction();
-            DB::table('expenses')->insert([
-                'description'           => $this->description      ,
-                'status'                => $this->status           ,
-                'paymentDate'           => $this->paymentDate      ,
-                'amountPay'             => $this->amountPay        ,
-                'additionalCharges'     => $this->additionalCharges,
-                'paid'                  => $this->paid             ,
-                'comments'              => $this->comments         ,
-                'category_id'           => $this->category->id     ,
-            ]);
-            DB::commit();
-            return true;
+            $this->validate();
+            if(!isset($this->errors)){
+
+                DB::beginTransaction();
+                DB::table('expenses')->insert([
+                    'description'           => $this->description      ,
+                    'paymentDate'           => $this->paymentDate      ,
+                    'amountPay'             => $this->amountPay        ,
+                    'paid'                  => $this->paid             
+                ]);
+                DB::commit();
+                $message = ["message"=>"Despeza incluida com sucesso"];
+            }else{
+                $message = $this->errors;
+            }
+            return $message;
         } catch (Exception $err) {
             DB::rollback();
-            return throwException(new Exception("Erro ao salvar a Despesa : "+$err));
+            return ["message"=> "Erro fatal: ".$err];
         }
     }
 
     public function _update()
     {
         try {
-            DB::beginTransaction();
-            DB::table('expenses')
-                ->where('id', $this->id)
-                ->update([
-                    'description'           => $this->description      ,
-                    'status'                => $this->status           ,
-                    'paymentDate'           => $this->paymentDate      ,
-                    'amountPay'             => $this->amountPay        ,
-                    'additionalCharges'     => $this->additionalCharges,
-                    'paid'                  => $this->paid             ,
-                    'comments'              => $this->comments         ,
-                    'category_id'           => $this->category->id     ,
-                ]);
-            DB::commit();
-            return true;
+            $this->validate();
+            if(!isset($this->errors)){
+
+                DB::beginTransaction();
+                DB::table('expenses')
+                    ->where('id', $this->id)
+                    ->update([
+                        'description'           => $this->description      ,
+                        'paymentDate'           => $this->paymentDate      ,
+                        'amountPay'             => $this->amountPay        ,
+                        'paid'                  => $this->paid             
+                    ]);
+                DB::commit();
+                $message = ["message"=>"Registro alterado com sucesso"];
+            }else{
+                $message = $this->errors;
+            }
+                return $message;
         } catch (Exception $err) {
             DB::rollback();
-            return throwException(new Exception("Erro ao Atualizar a Despesa : "+$err));
+            return ["message"=>"Erro ao Atualizar a Despesa : ".$err];
         }
     }
 
-    public function drop($id)
+    public function drop()
     {
         try {
             DB::beginTransaction();
             DB::table('expenses')
                 ->where('id', $this->id)
-                ->update(['status' => 'D']);
+                ->delete();
             DB::commit();
-            return true;
+            return ["message"=>"Despesa Deletada com sucesso"];;
         } catch (Exception $err) {
             DB::rollback();
-            return throwException(new Exception("Erro ao Deletar a Despesa : "+$err));
+            return ["message"=>"Erro ao Deletar a Despesa : ".$err];
+        }
+    }
+
+    private function validate(){
+        if($this->description !== null){
+            $this->errors = ["description" => "Descrição deve ter mais que 3 letras"];
+        }
+        
+        if($this->amountPay > 0){
+            $this->errors = ["amountPay" => "Valor da despeza deve ser maior que zero"];
+        }
+              
+        $date[] = explode('/', $this->paymentDate);
+        if(checkdate($date[0], $date[1], $date[2]) === 0 ){
+            $this->errors = ["paymentDate" => "Data da despeza Inválida"];
         }
     }
 }
