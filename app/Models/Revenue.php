@@ -70,7 +70,7 @@ class Revenue extends Model
     public function create() {
         try {
             $this->validate();
-            if(isset($this->errors)){
+            if(!isset($this->errors)){
                 DB::beginTransaction();
                 DB::table('revenues')->insert([
                     'description' => $this->description,
@@ -79,9 +79,10 @@ class Revenue extends Model
                     'received' => $this->received
                 ]);
                 DB::commit();
-                $message = ["Message"=>"Registro Salvo com sucesso."];
-                return $message;
+                return ["Message"=>"Registro Salvo com sucesso."];
             }
+            return $this->errors;
+
         } catch (Exception $err) {
             DB::rollback();
             $message = ["Message"=>"Erro ao salvar Registro: (".$err.")"];
@@ -104,14 +105,14 @@ class Revenue extends Model
                         'received' => $this->received
                     ]);
                 DB::commit();
-                $message = ["Message"=>"Registro Salva com sucesso."];
+                $message = ["Message"=>"Registro Alterado com sucesso."];
             }else{
                 $message = $this->errors;
             }
             return $message;
         } catch (Exception $err) {
             DB::rollback();
-            $message = ["message"=>"Erro ao salvar Registro: (".$err.")"];
+            $message = ["message"=>"Erro ao alterar Registro: (".$err.")"];
             return $message;
         }
         
@@ -135,17 +136,19 @@ class Revenue extends Model
     }
 
     private function validate(){
-        if($this->description !== null){
-            $this->errors = ["description" => "Descrição deve ter mais que 3 letras"];
+        if(strlen($this->description) < 3){
+            $this->errors["description"] = "Descrição deve ter mais que 3 letras";
         }
         
-        if($this->receivingValue > 0){
-            $this->errors = ["receivingValue" => "Valor a receber deve ser maior que zero"];
+        if($this->receivingValue <= 0){
+            $this->errors["receivingValue"] = "Valor a receber deve ser maior que zero";
         }
-              
-        $date[] = explode('-', $this->receivingDate);
-        if(checkdate($date[0], $date[1], $date[2]) === 0 ){
-            $this->errorss = ["receivingDate" => "Data de Recebimento Inválida"];
+
+        $data = Array();
+        $date = explode('-', $this->receivingDate);
+        if($this->receivingDate === null || !checkdate($date[2], $date[1], $date[0])){
+            $this->errors["receivingDate"] = "Data de Recebimento Inválida";
         }
+
     }
 }

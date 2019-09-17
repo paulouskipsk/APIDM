@@ -19,6 +19,10 @@ class ExpensesController extends Controller
     public function create(Request $request){
         $data = $request->json()->all();
 
+        echo "<pre>";
+            print_r($data);
+        echo "</pre>";
+
         $expense = new Expense(
             0,
             $data['description'],
@@ -27,13 +31,7 @@ class ExpensesController extends Controller
             $data['paid']
         );
 
-        try{
-            $expense->create();
-
-            return 1;
-        }catch(Exception $e){
-            return 0;
-        }
+        return response()->json($expense->create());
     }
 
     public function update(Request $request){ // verificar mensagem quando nao da certo

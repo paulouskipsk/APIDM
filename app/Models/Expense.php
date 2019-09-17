@@ -135,16 +135,17 @@ class Expense extends Model
     }
 
     private function validate(){
-        if($this->description !== null){
+        if($this->description === null){
             $this->errors = ["description" => "Descrição deve ter mais que 3 letras"];
         }
         
-        if($this->amountPay > 0){
+        if($this->amountPay < 0){
             $this->errors = ["amountPay" => "Valor da despeza deve ser maior que zero"];
         }
               
-        $date[] = explode('/', $this->paymentDate);
-        if(checkdate($date[0], $date[1], $date[2]) === 0 ){
+        $data = Array();
+        $date = explode('-', $this->paymentDate);
+        if(checkdate($date[2], $date[1], $date[0])){
             $this->errors = ["paymentDate" => "Data da despeza Inválida"];
         }
     }
