@@ -144,11 +144,14 @@ class Revenue extends Model
             $this->errors["receivingValue"] = "Valor a receber deve ser maior que zero";
         }
 
-        $data = Array();
-        $date = explode('-', $this->receivingDate);
-        if($this->receivingDate === null || !checkdate($date[2], $date[1], $date[0])){
+        if(!$this->receivingDate == null){
+            $date = Array();
+            $date = explode('-', $this->receivingDate);
+            if(checkdate($date[2], $date[1], $date[0])){
+                $this->errors["receivingDate"] = "Data de Recebimento Inválida";
+            }
+        }else{
             $this->errors["receivingDate"] = "Data de Recebimento Inválida";
         }
-
     }
 }
