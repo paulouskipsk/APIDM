@@ -79,7 +79,7 @@ class Revenue extends Model
                     'received' => $this->received
                 ]);
                 DB::commit();
-                return ["Message"=>"Registro Salvo com sucesso."];
+                return null;
             }
             return $this->errors;
 
