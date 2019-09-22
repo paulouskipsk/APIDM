@@ -143,10 +143,15 @@ class Expense extends Model
             $this->errors = ["amountPay" => "Valor da despeza deve ser maior que zero"];
         }
               
-        $data = Array();
-        $date = explode('-', $this->paymentDate);
-        if(checkdate($date[2], $date[1], $date[0])){
-            $this->errors = ["paymentDate" => "Data da despeza Inválida"];
+        if(!$this->paymentDate == null){
+            $date = Array();
+            $date = explode('-', $this->paymentDate);
+
+            if(!checkdate($date[1], $date[2], $date[0])){
+                $this->errors["paymentDate"] = "Data de Pagamento Inválido";
+            }
+        }else{
+            $this->errors["paymentDate"] = "Data de Pagamento não informado";
         }
     }
 }

@@ -135,7 +135,7 @@ class Revenue extends Model
 
     private function validate(){
         if(strlen($this->description) < 3){
-            $this->errors["description"] = "Descrição deve ter mais que 3 letras";
+            $this->errors["description"] = "Descrição deve ter mais que 3 Caracteres";
         }
         
         if($this->receivingValue <= 0){
@@ -145,11 +145,12 @@ class Revenue extends Model
         if(!$this->receivingDate == null){
             $date = Array();
             $date = explode('-', $this->receivingDate);
-            if(checkdate($date[2], $date[1], $date[0])){
+
+            if(!checkdate($date[1], $date[2], $date[0])){
                 $this->errors["receivingDate"] = "Data de Recebimento Inválida";
             }
         }else{
-            $this->errors["receivingDate"] = "Data de Recebimento Inválida";
+            $this->errors["receivingDate"] = "Data de Recebimento não informada";
         }
     }
 }
