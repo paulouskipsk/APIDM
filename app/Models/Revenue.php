@@ -105,11 +105,10 @@ class Revenue extends Model
                         'received' => $this->received
                     ]);
                 DB::commit();
-                $message = ["Message"=>"Registro Alterado com sucesso."];
+                return '';
             }else{
-                $message = $this->errors;
+                return $this->errors;
             }
-            return $message;
         } catch (Exception $err) {
             DB::rollback();
             $message = ["message"=>"Erro ao alterar Registro: (".$err.")"];
@@ -126,8 +125,7 @@ class Revenue extends Model
                 ->where('id', $this->id)
                 ->delete();
             DB::commit();
-            $message = ["message"=>"Registro Deletado com sucesso." ];
-            return $message;
+            return '';
         } catch (Exception $err) {
             DB::rollback();
             $message = ["message"=>"Erro ao deletar Registro: (".$err.")"];
