@@ -85,8 +85,7 @@ class Revenue extends Model
 
         } catch (Exception $err) {
             DB::rollback();
-            $message = ["Message"=>"Erro ao salvar Registro: (".$err.")"];
-            return $message;
+            return ["Message"=>"Erro ao salvar Registro: (".$err.")"];
         }
     }
 
@@ -111,8 +110,7 @@ class Revenue extends Model
             }
         } catch (Exception $err) {
             DB::rollback();
-            $message = ["message"=>"Erro ao alterar Registro: (".$err.")"];
-            return $message;
+            return ["message"=>"Erro ao alterar Registro: (".$err.")"];
         }
         
     }
@@ -128,8 +126,7 @@ class Revenue extends Model
             return '';
         } catch (Exception $err) {
             DB::rollback();
-            $message = ["message"=>"Erro ao deletar Registro: (".$err.")"];
-            return $message;
+            return ["message"=>"Erro ao deletar Registro: (".$err.")"];
         }
     }
 
