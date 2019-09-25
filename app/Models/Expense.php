@@ -8,6 +8,7 @@ use Mockery\CountValidator\Exception;
 
 class Expense extends Model
 {
+    private $errors;
     protected $fillable = [
         'id',
         'description',
@@ -72,7 +73,6 @@ class Expense extends Model
         try {
             $this->validate();
             if(!isset($this->errors)){
-
                 DB::beginTransaction();
                 DB::table('expenses')->insert([
                     'description'           => $this->description      ,
@@ -81,14 +81,13 @@ class Expense extends Model
                     'paid'                  => $this->paid             
                 ]);
                 DB::commit();
-                $message = ["message"=>"Despeza incluida com sucesso"];
+                return '';
             }else{
-                $message = $this->errors;
+                return $this->errors;
             }
-            return $message;
         } catch (Exception $err) {
             DB::rollback();
-            return ["message"=> "Erro fatal: ".$err];
+            return ["Message"=>"Erro ao salvar Registro: (".$err.")"];
         }
     }
 
@@ -97,7 +96,6 @@ class Expense extends Model
         try {
             $this->validate();
             if(!isset($this->errors)){
-
                 DB::beginTransaction();
                 DB::table('expenses')
                     ->where('id', $this->id)
@@ -108,11 +106,10 @@ class Expense extends Model
                         'paid'                  => $this->paid             
                     ]);
                 DB::commit();
-                $message = ["message"=>"Registro alterado com sucesso"];
+                return '';
             }else{
-                $message = $this->errors;
+                return $this->errors;
             }
-                return $message;
         } catch (Exception $err) {
             DB::rollback();
             return ["message"=>"Erro ao Atualizar a Despesa : ".$err];
@@ -127,7 +124,7 @@ class Expense extends Model
                 ->where('id', $this->id)
                 ->delete();
             DB::commit();
-            return ["message"=>"Despesa Deletada com sucesso"];;
+            return '';
         } catch (Exception $err) {
             DB::rollback();
             return ["message"=>"Erro ao Deletar a Despesa : ".$err];
@@ -135,18 +132,23 @@ class Expense extends Model
     }
 
     private function validate(){
-        if($this->description === null){
-            $this->errors = ["description" => "Descrição deve ter mais que 3 letras"];
+        if(strlen($this->description) < 3){
+            $this->errors = ["description" => "Descrição deve ter mais que 3 caracteres"];
         }
         
-        if($this->amountPay < 0){
-            $this->errors = ["amountPay" => "Valor da despeza deve ser maior que zero"];
+        if($this->amountPay <= 0){
+            $this->errors["amountPay"] = "Valor da despeza deve ser maior que zero";
         }
-              
-        $data = Array();
-        $date = explode('-', $this->paymentDate);
-        if(checkdate($date[2], $date[1], $date[0])){
-            $this->errors = ["paymentDate" => "Data da despeza Inválida"];
+          
+        if(!$this->paymentDate == null){
+            $date = Array();
+            $date = explode('-', $this->paymentDate);
+
+            if(!checkdate($date[1], $date[2], $date[0])){
+                $this->errors["paymentDate"] = "Data de Pagamento Inválido";
+            }
+        }else{
+            $this->errors["paymentDate"] = "Data de Pagamento não informado";
         }
     }
 }

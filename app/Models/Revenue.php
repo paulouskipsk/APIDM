@@ -85,8 +85,7 @@ class Revenue extends Model
 
         } catch (Exception $err) {
             DB::rollback();
-            $message = ["Message"=>"Erro ao salvar Registro: (".$err.")"];
-            return $message;
+            return ["Message"=>"Erro ao salvar Registro: (".$err.")"];
         }
     }
 
@@ -105,15 +104,13 @@ class Revenue extends Model
                         'received' => $this->received
                     ]);
                 DB::commit();
-                $message = ["Message"=>"Registro Alterado com sucesso."];
+                return '';
             }else{
-                $message = $this->errors;
+                return $this->errors;
             }
-            return $message;
         } catch (Exception $err) {
             DB::rollback();
-            $message = ["message"=>"Erro ao alterar Registro: (".$err.")"];
-            return $message;
+            return ["message"=>"Erro ao alterar Registro: (".$err.")"];
         }
         
     }
@@ -126,18 +123,16 @@ class Revenue extends Model
                 ->where('id', $this->id)
                 ->delete();
             DB::commit();
-            $message = ["message"=>"Registro Deletado com sucesso." ];
-            return $message;
+            return '';
         } catch (Exception $err) {
             DB::rollback();
-            $message = ["message"=>"Erro ao deletar Registro: (".$err.")"];
-            return $message;
+            return ["message"=>"Erro ao deletar Registro: (".$err.")"];
         }
     }
 
     private function validate(){
         if(strlen($this->description) < 3){
-            $this->errors["description"] = "Descrição deve ter mais que 3 letras";
+            $this->errors["description"] = "Descrição deve ter mais que 3 Caracteres";
         }
         
         if($this->receivingValue <= 0){
@@ -147,11 +142,12 @@ class Revenue extends Model
         if(!$this->receivingDate == null){
             $date = Array();
             $date = explode('-', $this->receivingDate);
-            if(checkdate($date[2], $date[1], $date[0])){
+
+            if(!checkdate($date[1], $date[2], $date[0])){
                 $this->errors["receivingDate"] = "Data de Recebimento Inválida";
             }
         }else{
-            $this->errors["receivingDate"] = "Data de Recebimento Inválida";
+            $this->errors["receivingDate"] = "Data de Recebimento não informada";
         }
     }
 }

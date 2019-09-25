@@ -13,10 +13,11 @@ class LoginController extends Controller
         $users = User::getAll();
 
         foreach($users as $user){
-            if(strcmp($data['login'], $user->login) == 0 && Hash::check($data['password'], $user->password)){
-                return response()->json($user);
+            if ($user->login == $data['login'] && $user->password == $data['password']) {
+                $response = 'ok';
+                return response()->json($response);
             }
         }        
-        return response()->json('');
+        return "Usuário ou senha inválidos";
     }
 }

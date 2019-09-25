@@ -17,21 +17,15 @@ class UsersController extends Controller
 
     public function create(Request $request){
         $data = $request->json()->all();
-
         $user = new User(
-            0,    
+            0,
             $data['name'],
             $data['login'],
             $data['password'],
             $data['image']
         );
 
-        try{
-            $user->create();
-            return 1;
-        }catch(Exception $e){
-            return 0;
-        }
+        return response()->json($user->create());
     }
 
     public function update(Request $request){
