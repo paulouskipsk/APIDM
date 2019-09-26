@@ -22,7 +22,7 @@ class Users extends Migration
                 DB::table('users')->insert([
                     'name'      => 'Administrator', 
                     'login'     => 'admin',
-                    'password'  => Hash::make('admin'),
+                    'password'  => 'admin',
                     'image'     => $this->getImageAdm(),              
                 ]);
             DB::commit();
