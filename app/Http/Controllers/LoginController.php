@@ -13,7 +13,7 @@ class LoginController extends Controller
         $users = User::getAll();
 
         foreach($users as $user){
-            if ($user->login == $data['login'] && $user->password == Hash::make($data['password'])) {
+            if ($user->login == $data['login'] && $user->password == $data['password']) {
                return response()->json($user);
             }
         }        

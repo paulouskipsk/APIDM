@@ -70,7 +70,7 @@ class User extends Model
                 DB::table('users')->insert([
                     'name'      => $this->name,
                     'login'     => $this->login,
-                    'password'  => Hash::make($this->password),
+                    'password'  => $this->password,
                     'image'     => $this->image
                 ]);
                 DB::commit();
@@ -123,11 +123,11 @@ class User extends Model
             $this->errors["name"] = "Nome deve ter mais que 3 Caracteres";
         }
         
-        if($this->login < 3){
+        if(strlen($this->login) < 3){
             $this->errors["login"] = "Login deve ter mais que 3 Caracteres";
         }
 
-        if($this->password < 3){
+        if(strlen($this->password) < 3){
             $this->errors["password"] = "password deve ter mais que 3 Caracteres";
         }
     }
