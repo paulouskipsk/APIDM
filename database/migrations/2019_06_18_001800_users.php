@@ -21,8 +21,8 @@ class Users extends Migration
         DB::beginTransaction();
                 DB::table('users')->insert([
                     'name'      => 'Administrator', 
-                    'login'     => 'adm',
-                    'password'  => Hash::make('adm'),
+                    'login'     => 'admin',
+                    'password'  => Hash::make('admin'),
                     'image'     => $this->getImageAdm(),              
                 ]);
             DB::commit();

@@ -14,9 +14,9 @@ class LoginController extends Controller
 
         foreach($users as $user){
             if ($user->login == $data['login'] && $user->password == Hash::make($data['password'])) {
-               return $response()->json($user);
+               return response()->json($user);
             }
         }        
-        return $response()->json("Usuário ou senha inválidos");
+        return response()->json("Usuário ou senha inválidos");
     }
 }
